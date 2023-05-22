@@ -24,6 +24,7 @@ Puedes realizar pruebas utilizando diferentes herramientas:
 ## Tecnologías Utilizadas
 
 - Java
+- Spring
 - Swagger
 - Lombok
 - Validation
