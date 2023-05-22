@@ -3,6 +3,7 @@ package com.paygoal.demo.controllers;
 import com.paygoal.demo.models.Product;
 import com.paygoal.demo.services.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,8 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+
+    @Operation(summary = "Retrieves a product by its ID", description = "Returns the details of a specific product based on its unique identifier")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getProductById(@PathVariable Long id) {
         try {
@@ -33,7 +36,7 @@ public class ProductController {
             return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @Operation(summary = "Creates a new product", description = "Adds a new product to the system with the provided information")
     @PostMapping("/create")
     public ResponseEntity<Object> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -51,6 +54,7 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Updates an existing product", description = "Modifies the details of an existing product based on the given parameters")
     @PutMapping("/{id}/update")
     public ResponseEntity<Object> updateProduct(@PathVariable Long id, @Valid @RequestBody Product updatedProduct, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -74,6 +78,7 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Deletes a product", description = "Removes a product from the system based on its ID")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Object> deleteProduct(@PathVariable Long id){
         try {
@@ -90,6 +95,7 @@ public class ProductController {
         }
     }
 
+    @Operation(summary = "Retrieves all products sorted by price", description = "Returns a list of all products available in the system, sorted in ascending order by their respective prices")
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProductsOrderByPrice() {
         try {
