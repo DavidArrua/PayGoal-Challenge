@@ -1,0 +1,92 @@
+package com.paygoal.demo.controllers;
+
+import com.paygoal.demo.models.Product;
+import com.paygoal.demo.services.ProductService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/product")
+public class ProductController {
+
+    @Autowired
+    ProductService productService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getProductById(@PathVariable Long id) {
+        try {
+            Product product = productService.findById(id);
+            if (product == null) {
+                return new ResponseEntity<>("Product with ID " + id + " not found", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Object> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            List<String> errorMessages = new ArrayList<>();
+            fieldErrors.forEach(fieldError -> errorMessages.add(fieldError.getDefaultMessage()));
+            return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            productService.saveProduct(product);
+            return new ResponseEntity<>("Added successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Object> updateProduct(@PathVariable Long id, @Valid @RequestBody Product updatedProduct, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            List<String> errorMessages = new ArrayList<>();
+            fieldErrors.forEach(fieldError -> errorMessages.add(fieldError.getDefaultMessage()));
+            return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Product product = productService.findById(id);
+            if (product == null) {
+                return new ResponseEntity<>("Product with ID " + id + " not found", HttpStatus.NOT_FOUND);
+            }
+
+            productService.updateProduct(id,updatedProduct);
+            return new ResponseEntity<>("Updated successfully", HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Object> deleteProduct(@PathVariable Long id){
+        try {
+            Product product = productService.findById(id);
+            if (product == null) {
+                return new ResponseEntity<>("Product with ID " + id + " not found", HttpStatus.NOT_FOUND);
+            }
+
+            productService.deleteProduct(id);
+            return new ResponseEntity<>("Product with ID " + id + " deleted successfully", HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}
