@@ -89,4 +89,17 @@ public class ProductController {
             return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllProductsOrderByPrice() {
+        try {
+            List<Product> products = productService.getAllProductsOrderByPrice();
+            if (products.isEmpty()) {
+                return new ResponseEntity<>("No products found", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -6,6 +6,9 @@ import com.paygoal.demo.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -47,5 +50,18 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(updatedProduct.getQuantity());
 
         saveProduct(product);
+    }
+
+    @Override
+    public List<Product> getAllProductsOrderByPrice() {
+        List<Product> products = productRepository.findAll();
+        products.sort(new Comparator<Product>() {
+            @Override
+            public int compare(Product p1, Product p2) {
+                return Double.compare(p1.getPrice(), p2.getPrice());
+            }
+        });
+
+        return products;
     }
 }
