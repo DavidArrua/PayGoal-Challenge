@@ -1,4 +1,4 @@
-# PayGoal-Exercise
+# PayGoal-Challenge
 
 
 ## Funcionalidades
